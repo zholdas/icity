@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+	<head> 
+	    <title>Icity - компании, маршруты автобусов Астаны</title>		
+	    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="content-language" content="ru" />
+		<meta name="keywords" content="карта, компании, маршруты автобусов, адреса организаций, астана" />
+		<meta name="description" content="Icity - подробная карта Астаны, каталог организаций, маршруты автобусов, маршруты автобусов астаны" />
+		<meta name="verify-reformal" content="d73bdb1ac56ee271cda563e7" />
+		<link rel="shortcut icon" type="image/ico" href="{{MEDIA_URL}}images/favicon/favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/styles/index.css">
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/black-tie/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	    <script src="http://api-maps.yandex.ru/1.1/index.xml?key=AGKajEwBAAAAfXO4WQIAJ0toH8HQcUkOwdTKPmtbtXfI_EcAAAAAAAAAAADyD9CPjEAr-TK-p92_QXDpGliQkQ==&modules=traffic" type="text/javascript"></script>	
+	    <script language="JavaScript" type="text/javascript" src="{{MEDIA_URL}}/scripts/ymap.js"></script>	
+		<!--<link rel="stylesheet" href="http://dev.jquery.com/view/trunk/plugins/treeview/demo/screen.css" type="text/css" />-->
+		<link rel="stylesheet" href="{{MEDIA_URL}}/styles/screen.css" type="text/css" />
+		<!--<link rel="stylesheet" href="http://dev.jquery.com/view/trunk/plugins/treeview/jquery.treeview.css" type="text/css" />-->
+		<link rel="stylesheet" href="{{MEDIA_URL}}/styles/jquery.treeview.css" type="text/css" />		
+		<!--<script type="text/javascript" src="http://dev.jquery.com/view/trunk/plugins/treeview/jquery.treeview.js"></script>-->
+		<script type="text/javascript" src="{{MEDIA_URL}}/scripts/jquery.treeview.min.js"></script>
+		<script type="text/javascript" src="{{MEDIA_URL}}/scripts/jquery.activity-indicator-1.0.0.min.js"></script>
+		
+		<script type="text/javascript" src="{{MEDIA_URL}}/scripts/fancybox/jquery.fancybox-1.3.2.pack.js"></script>
+		<link rel="stylesheet" href="{{MEDIA_URL}}/scripts/fancybox/jquery.fancybox-1.3.2.css" type="text/css" media="screen" />		
+		<script type="text/javascript"> 
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-17925288-2']);
+		  _gaq.push(['_setDomainName', '.icity.kz']);
+		  _gaq.push(['_trackPageview']);
+		 
+		  (function() {
+		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();		 
+		</script>
+	</head>  
+	<body>
+		<div id="YMapsID">
+			<div id="tabs">
+			    <ul>
+			        <li><a href="#buses_tab"><span>Маршруты автобусов</span></a></li>
+					<li><a href="#companies_tab"><span>Компании</span></a></li>		
+					<li><a href="#orange_tab"><span>Orange</span></a></li>		        
+			        <!--<li><a href="#search_tab"><span>Поиск</span></a></li>-->
+			    </ul>
+			    <div id="companies_tab" class="tab_menus">			    	
+			    	<ul id="menu_companies" class="menu_companies_style">
+			    	{% spaceless %}
+					{% for main_rubric in main_rubrics %}						
+						<li><span style="font-weight:bold;">{{ main_rubric.name }}</span>							
+							<ul>
+								{% for rubric in rubrics %}									
+									{% if main_rubric.rubric_id|slugify in rubric.number|slugify|slice:":3" %}
+										<li id="li-{{ rubric.number }}">
+											<span>{{ rubric.name }}</span>
+											<img src="{{MEDIA_URL}}images/wait_animated_32x8.gif" alt="wait" style="display:none;">
+											<ul></ul>
+										</li>										
+									{% endif %}
+								{% endfor %}
+							</ul>							
+						</li>						
+					{% endfor %}
+					{% endspaceless %}				    
+					</ul>
+			    </div>
+			    <div id="buses_tab" class="tab_menus">
+			    	<table style="width: 100%;" border="0" cellspacing="0" cellpadding="0" align="center">
+						{% spaceless %}
+						<tbody>
+							{% for bus in buses %}
+								{% cycle '<tr>' '' '' '' '' '' '' '' %}
+								<!--<td><a style="color: #{{ bus.color|slice:":6" }}" href="#" id="bus_{{ bus.route }}">{{ bus.route }}</a></td>-->
+								<td><a href="#" id="bus_{{ bus.color|slice:":6" }}_{{ bus.route }}">{{ bus.route }}</a></td>
+								{% cycle '' '' '' '' '' '' '' '</tr>' %}
+							{% endfor %}
+							</tr>
+						</tbody>
+						{% endspaceless %}
+					</table>  
+			    </div>
+				<div id="orange_tab" class="tab_menus">
+					<ul id="orange_companies" class="menu_companies_style">
+					{% spaceless %}
+					{% for orange_rubric in orange_rubrics %}						
+						<li id="li-{{ orange_rubric.number }}">
+							<span style="font-weight:bold;">{{ orange_rubric.name }}</span>	
+							<img src="{{MEDIA_URL}}images/wait_animated_32x8.gif" alt="wait" style="display:none;">						
+							<ul></ul>							
+						</li>						
+					{% endfor %}
+					{% endspaceless %}
+					</ul>
+				</div>
+			</div>
+			
+			<div id="footer">	
+				<div style="height:5px"></div>		
+				<div id="left">&#169; 2013 <a href="http://dreamteam.kz" style="color:white">Dream Team</a><sup><font size="-2">&#174;</font></sup>&nbsp;(info@icity.kz)</div>
+				<!--<div id="right"><a href="#" id="feedback">Сообщить об ошибке</a></div>-->
+				<div id="center"><a href="http://m.icity.kz" style="color: white">Мобильная версия</a></div>	
+				<div id="right">
+					<script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+					<div class="yashare-auto-init" data-yashareType="link" data-yashareQuickServices="vkontakte,facebook,moimir,twitter,odnoklassniki" data-yashareL10n="ru">
+					</div>
+				<!-- AddThis Button BEGIN -->
+				<!--<div class="addthis_toolbox addthis_default_style ">
+				<a class="addthis_button_mymailru"></a>
+				<a class="addthis_button_vk"></a>
+				<a class="addthis_button_facebook"></a>
+				<a class="addthis_button_twitter"></a>
+				<a class="addthis_button_compact"></a>
+				</div>
+				<script type="text/javascript">var addthis_config = {"data_track_clickback":true, ui_language: "ru"};</script>
+				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=tzhe"></script>-->
+				<!-- AddThis Button END -->
+				</div>
+			</div>
+			<a style="z-index:2;position:absolute;bottom:0;left:690px;" href="http://bul.kz/site.php?site_id=189" target=_blank><img src="http://bul.kz/informer/i189.png" width="88" height="31" border="0"></a>
+		</div>  
+		<!--<div id="feedback-div" style="filter:alpha(opacity=85);">
+			<form>{% csrf_token %}
+				<b>Ваш e-mail:</b>
+				<div>
+					<input type="text" id="feedback-email" width="50"><span id="validEmail"></span>
+				</div>
+				<p></p><b>Сообщение:</b>
+				<div>
+					<textarea rows="6" cols="35" wrap="hard" style="width:300px;height:150px;" name="text" id="feedback_textarea"></textarea>
+				</div>
+				<p></p>
+				<button disabled id="feedback-submit-button">Отправить</button>
+				<button id="feedback-cancel-button">Отмена</button>
+			</form>
+		</div>-->
+
+		
+		<script type="text/javascript"><!--
+			reformal_wdg_domain    = "icity";
+			reformal_wdg_mode    = 0;
+			reformal_wdg_title   = "Маршруты автобусов Астаны, организации Астаны";
+			reformal_wdg_ltitle  = "Оставьте свой отзыв";
+			reformal_wdg_lfont   = "";
+			reformal_wdg_lsize   = "";
+			reformal_wdg_color   = "#1b69de";
+			reformal_wdg_bcolor  = "#516683";
+			reformal_wdg_tcolor  = "#FFFFFF";
+			reformal_wdg_align   = "right";
+			reformal_wdg_charset = "utf-8";
+			reformal_wdg_waction = 0;
+			reformal_wdg_vcolor  = "#9FCE54";
+			reformal_wdg_cmline  = "#E0E0E0";
+			reformal_wdg_glcolor  = "#105895";
+			reformal_wdg_tbcolor  = "#FFFFFF";
+			 
+			reformal_wdg_bimage = "7688f5685f7701e97daa5497d3d9c745.png";
+			 //-->
+		</script>
+		<script type="text/javascript" language="JavaScript" src="http://widget.reformal.ru/tab6.js"></script><noscript><a href="http://icity.reformal.ru">Маршруты автобусов Астаны, организации Астаны feedback </a> <a href="http://reformal.ru"><img src="http://reformal.ru/i/logo.gif" /></a></noscript>	
+		<!-- Yandex.Metrika counter -->
+		<div style="display:none;"><script type="text/javascript">
+		(function(w, c) {
+		    (w[c] = w[c] || []).push(function() {
+		        try {
+		            w.yaCounter4124323 = new Ya.Metrika(4124323);
+		             yaCounter4124323.clickmap(true);
+		             yaCounter4124323.trackLinks(true);
+		        
+		        } catch(e) { }
+		    });
+		})(window, 'yandex_metrika_callbacks');
+		</script></div>
+		<script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script>
+		<noscript><div style="position:absolute"><img src="//mc.yandex.ru/watch/4124323" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+		<!-- BEGIN JIVOSITE CODE {literal} -->
+		<script type='text/javascript'>
+		(function(){ var widget_id = 'bMwDXHioQZ';
+		var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = '//code.jivosite.com/script/widget/'+widget_id; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);})();</script>
+		<!-- {/literal} END JIVOSITE CODE -->
+	</body>  
+</html> 
